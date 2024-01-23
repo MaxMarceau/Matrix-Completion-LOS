@@ -1,0 +1,10 @@
+function code = gender2num(gender)
+    switch gender
+        case 'M'
+            code = 0;
+        case 'F'
+            code = 1;
+        otherwise
+            code = NaN;
+    end
+end
