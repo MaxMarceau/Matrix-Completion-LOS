@@ -1,0 +1,14 @@
+function filledMatrix = fillNaNWithColumnMean(inputMatrix, columnMeans)
+    % Create a new matrix with NaN values replaced by corresponding column means
+    filledMatrix = inputMatrix;
+
+    [~, numCols] = size(inputMatrix); % Use size to get the number of columns
+
+    for col = 1:numCols
+        % Find NaN values in the column
+        nanIndices = isnan(inputMatrix(:, col));
+
+        % Replace NaN values with the precalculated column mean
+        filledMatrix(nanIndices, col) = columnMeans(col);
+    end
+end
