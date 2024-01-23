@@ -1,0 +1,24 @@
+function code = admissiontype2num(admtype)
+    switch admtype
+        case 'URGENT'
+            code = 0;
+        case 'EW EMER.'
+            code = 1;
+        case 'DIRECT EMER.'
+            code = 2;
+        case 'OBSERVATION ADMIT'
+            code = 3;
+        case 'ELECTIVE'
+            code = 4;
+        case 'SURGICAL SAME DAY ADMISSION'
+            code = 5;
+        case 'EU OBSERVATION'
+            code = 6;
+        case 'DIRECT OBSERVATION'
+            code = 7;
+        case 'AMBULATORY OBSERVATION'
+            code = 8;
+        otherwise
+            code = NaN;
+    end
+end
