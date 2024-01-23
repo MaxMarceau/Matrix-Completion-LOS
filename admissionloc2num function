@@ -1,0 +1,28 @@
+function code = admissionloc2num(admloc)
+    switch admloc
+        case 'TRANSFER FROM HOSPITAL'
+            code = 0;
+        case 'EMERGENCY ROOM'
+            code = 1;
+        case 'PHYSICIAN REFERRAL'
+            code = 2;
+        case 'WALK-IN/SELF REFERRAL'
+            code = 3;
+        case 'PROCEDURE SITE'
+            code = 4;
+        case 'CLINIC REFERRAL'
+            code = 5;
+        case 'TRANSFER FROM SKILLED NURSING FACILITY'
+            code = 6;
+        case 'PACU'
+            code = 7;
+        case 'INFORMATION NOT AVAILABLE'
+            code = 8;
+        case 'AMBULATORY SURGERY TRANSFER'
+            code = 9;
+        case 'INTERNAL TRANSFER TO OR FROM PSYCH'
+            code = 10;
+        otherwise
+            code = NaN;
+    end
+end
