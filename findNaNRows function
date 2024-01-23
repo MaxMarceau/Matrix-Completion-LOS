@@ -1,0 +1,4 @@
+function nanRows = findNaNRows(matrix)
+    % Find rows with NaN values in a matrix
+    nanRows = find(any(isnan(matrix), 2));
+end
