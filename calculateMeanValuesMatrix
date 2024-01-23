@@ -1,0 +1,13 @@
+function meanValuesMatrix = calculateMeanValuesMatrix(similarRowsMatrix, data)
+    % Initialize a matrix to store the mean values for each set of similar rows
+    meanValuesMatrix = zeros(size(similarRowsMatrix, 1), size(data, 2));
+
+    % Calculate the mean values for each set of similar rows
+    for i = 1:size(similarRowsMatrix, 1)
+        % Extract the corresponding rows from data
+        similarRows = data(similarRowsMatrix(i, :), :);
+
+        % Calculate the column means
+        meanValuesMatrix(i, :) = mean(similarRows, 1);
+    end
+end
