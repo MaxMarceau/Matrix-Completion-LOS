@@ -1,0 +1,24 @@
+function code = firstcareunit2num(fcu)
+    switch fcu
+        case 'Coronary Care Unit (CCU)'
+            code = 0;
+        case 'Medical/Surgical Intensive Care Unit (MICU/SICU)'
+            code = 1;
+        case 'Neuro Intermediate'
+            code = 2;
+        case 'Surgical Intensive Care Unit (SICU)'
+            code = 3;
+        case 'Trauma SICU (TSICU)'
+            code = 4;
+        case 'Cardiac Vascular Intensive Care Unit (CVICU)'
+            code = 5;
+        case 'Medical Intensive Care Unit (MICU)'
+            code = 6;
+        case 'Neuro Surgical Intensive Care Unit (Neuro SICU)'
+            code = 7;
+        case 'Neuro Stepdown'
+            code = 8;
+        otherwise
+            code = NaN;
+    end
+end
