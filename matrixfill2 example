@@ -1,0 +1,100 @@
+close all; clear all; clc;
+
+filename = 'icu_stays_data.csv';
+
+% Read the CSV file as a table
+mytable = readtable(filename, 'VariableNamingRule','preserve');
+
+N = size(mytable,1);
+
+% Delete some columns:
+%   Column 1 = stay_id -- not needed for regression learner
+%   Column 6 = Diagnosis_1 -- too hard to categorize for now
+%   Column 7 = Diagnosis_2 -- too hard to categorize for now
+%   Column 8 = icd_version -- not needed for regression learner
+cols_to_keep = [2:5, 9:35];
+mytable = mytable(:,cols_to_keep);
+
+% Convert First Care Unit from text to number
+FCU = zeros(N,1);
+FCU_text = mytable.(2);
+for i = 1:N
+    FCU(i) = firstcareunit2num(FCU_text{i});
+end
+
+% Convert Admission Type from text to number
+AdmType = zeros(N,1);
+AdmType_text = mytable.(3);
+for i = 1:N
+    AdmType(i) = admissiontype2num(AdmType_text{i});
+end
+
+% Convert Admission Location from text to number
+AdmLoc = zeros(N,1);
+AdmLoc_text = mytable.(4);
+for i = 1:N
+    AdmLoc(i) = admissionloc2num(AdmLoc_text{i});
+end
+
+% Convert Gender from text to number
+Gender = zeros(N,1);
+Gender_text = mytable.(5);
+for i = 1:N
+    Gender(i) = gender2num(Gender_text{i});
+end
+
+% Convert the numerical table columns to a matrix
+numtable = table2array(mytable(:,6:31));
+
+% Format Feature Matrix
+x = [FCU, AdmType, AdmLoc, Gender, numtable];
+
+% Format Length of Stay
+y = table2array(mytable(:,1));
+
+% Remove rows that have null values
+[nanrows,~] = find(isnan(x));
+nanrows = unique(nanrows);
+x(nanrows,:) = [];
+y(nanrows,:) = [];
+
+% Format remaining values for Classification Learner
+data_for_regression_learner = [x,y];
+save('icu_stays_data.mat','data_for_regression_learner');
+
+% Define the percentage of values to be removed
+remove_percentage = 0.01;
+
+% Randomly select 20% of the values for removal
+rng('default'); % Set the random seed for reproducibility
+num_values_to_remove = round(remove_percentage * numel(data_for_regression_learner));
+values_to_remove_indices = datasample(1:numel(data_for_regression_learner), num_values_to_remove, 'Replace', false);
+
+full_removed_test = data_for_regression_learner;
+full_removed_test(values_to_remove_indices) = NaN;
+
+% Calculate the column means of the complete dataset
+meansCompleteDataset = calculate_column_means(data_for_regression_learner);
+
+% Temporarily fill the removed values data with the column means from the
+% comlete dataset
+tempFillPatientData = fillNaNWithColumnMean(full_removed_test, meansCompleteDataset);
+
+% Determine the rows with a NaN value
+nanRows = findNaNRows(full_removed_test);
+
+% Determine similarity matrix
+k = 100; % You can change the value of k as needed for how many neighbors needed
+similarRowsMatrix = findSimilarRowsMatrix(tempFillPatientData, nanRows, k);
+
+% Determine the means of the 5 similar rows for each row with a NaN
+meanValuesMatrix = calculateMeanValuesMatrix(similarRowsMatrix, tempFillPatientData);
+
+% Fill the original missing value matrix with the corresponding similar
+% matrix means
+
+filledPatientData = fillNaNWithFinalInput(full_removed_test, nanRows, meanValuesMatrix);
+save('matrixFillMethod2Test.mat','filledPatientData');
+
+mse_value_method1 = mean((data_for_regression_learner(:) - tempFillPatientData(:)).^2);
+mse_value_method2 = mean((data_for_regression_learner(:) - filledPatientData(:)).^2);
