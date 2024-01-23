@@ -1,0 +1,25 @@
+function similarRowsMatrix = findSimilarRowsMatrix(data, nanRows, k)
+    % Initialize a matrix to store the nearest row indices for each row with NaN
+    similarRowsMatrix = zeros(length(nanRows), k);
+
+    % Iterate through rows with NaN values
+    for i = 1:length(nanRows)
+        selectedRow = nanRows(i);
+
+        % Extract the selected row from the filled matrix
+        queryRow = data(selectedRow, :);
+
+        % Remove the selected row from the filled matrix
+        trainingData = data([1:selectedRow-1, selectedRow+1:end], :);
+
+        % Normalize the query row and training data
+        normalizedQueryRow = zscore(queryRow);
+        normalizedTrainingData = zscore(trainingData);
+
+        % Use knnsearch with normalized data to find the k most similar rows
+        nearestIndices = knnsearch(normalizedTrainingData, normalizedQueryRow, 'K', k);
+
+        % Store the nearest row indices in the matrix
+        similarRowsMatrix(i, :) = nearestIndices;
+    end
+end
