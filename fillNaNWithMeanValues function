@@ -1,0 +1,11 @@
+function filledMatrix = fillNaNWithMeanValues(patientData, meanValuesMatrix)
+    % Find the indices of NaN values in the patientData matrix
+    nanIndices = isnan(patientData);
+    filledMatrix = patientData;
+
+    % Iterate through each row of the meanValuesMatrix and replace NaN values
+    for i = 1:size(meanValuesMatrix, 1)
+        nanRowIndices = find(nanIndices(i, :));  % Find indices of NaN values in the current row
+        filledMatrix(i, nanRowIndices) = meanValuesMatrix(i, nanRowIndices);  % Replace NaN values with mean values
+    end
+end
