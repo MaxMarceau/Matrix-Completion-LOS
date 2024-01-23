@@ -1,0 +1,9 @@
+function filledData = fillNaNWithFinalInput(originalData, nanRows, meanValuesMatrix)
+    filledData = originalData;
+
+    % Iterate through each row with NaN values
+    for i = 1:length(nanRows)
+        rowIdx = nanRows(i);
+        filledData(rowIdx, isnan(originalData(rowIdx, :))) = meanValuesMatrix(i, isnan(originalData(rowIdx, :)));
+    end
+end
