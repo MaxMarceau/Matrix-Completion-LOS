@@ -1,0 +1,4 @@
+function means = calculate_column_means(matrix)
+% Calculate the mean along each column
+means = mean(matrix,1);
+end
